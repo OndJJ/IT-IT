@@ -2,7 +2,7 @@
 <title>{% block title %}{% endblock %} IT&IT </title>
 <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 <nav>
-    <h1>INTFLOW_ITS</h1>
+    <h1>IT&IT</h1>
     <ul>
         {% if g.user %}
             <li><span>{{ g.user['username'] }}</span>
@@ -14,9 +14,9 @@
     </ul>
 </nav>
 <section class="content">
-    <header>
-        {% block header %}{% endblock %}
-    </header>
+<header>
+    {% block header %}{% endblock %}
+</header>
 {% for message in get_flashed_messages() %}
     <div class="flash">{{message}}</div>
 {% endfor %}
