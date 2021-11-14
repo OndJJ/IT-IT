@@ -24,7 +24,7 @@ def index():
 @login_required
 def create():
     if request.method == 'POST':
-        title = request.form['titel']
+        title = request.form['title']
         body = request.form['body']
         error = None
 
@@ -37,14 +37,14 @@ def create():
             db = get_db()
             db.execute(
                 'INSERT INTO post (title, body, author_id)'
-                ' VALUES (?, ?, ?',
+                ' VALUES (?, ?, ?)',
                 (title, body, g.user['id'])
             )
         db.commit()
         return redirect(url_for('blog.index'))
 
     return render_template('blog/create.html')
-
+    
 
 def get_post(id, check_author=True):
     post = get_db().execute(
