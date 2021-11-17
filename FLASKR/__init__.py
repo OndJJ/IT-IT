@@ -6,11 +6,12 @@ import os
 def create_app(test_config=None):
     # create and configure the app
     app = Flask(__name__, instance_relative_config=True)
-    app.config['UPLOAD_FOLDER'] = 'Users/ond/Desktop/datafile'
+    # app.config['UPLOAD_FOLDER'] = 'FLASKR\templates\media'
     app.config.from_mapping(
         debug=True,
         SECRET_KEY='dev',
         DATABASE=os.path.join(app.instance_path, 'flaskr.sqlite'),
+        
     )
 
     if test_config is None:
