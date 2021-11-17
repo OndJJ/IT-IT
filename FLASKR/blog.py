@@ -11,7 +11,6 @@ from werkzeug.utils import secure_filename
 
 bp = Blueprint('blog', __name__)
 
-
 @bp.route('/')
 def index():
     db = get_db()
@@ -26,9 +25,16 @@ def index():
 @bp.route('/create', methods=('GET', 'POST'))
 @login_required
 def create():
+
+    # if request.method == 'POST':
+    #     file = request.files['file']
+    #     file.save(os.path.join(file.filename))
+
     if request.method == 'POST':
         title = request.form['title']
         body = request.form['body']
+        file = request.files['file']
+        file.save(os.path.join(file.filename))
         error = None
 
         if not title:
@@ -45,8 +51,14 @@ def create():
             )
         db.commit()
         return redirect(url_for('blog.index'))
-
     return render_template('blog/create.html')
+
+
+# def uploader_file():
+#         methods=['GET', 'POST']
+#         if request.method == 'POST':
+#             file = request.files['file']
+#             file.save(os.path.join(file.filename))
 
 
 def get_post(id, check_author=True):

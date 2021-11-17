@@ -1,10 +1,12 @@
+from flask import Flask, flash, redirect, render_template, request, url_for, send_from_directory, session
+from werkzeug.utils import secure_filename
 import os
-from flask import Flask
 
 
 def create_app(test_config=None):
     # create and configure the app
     app = Flask(__name__, instance_relative_config=True)
+    app.config['UPLOAD_FOLDER'] = 'Users/ond/Desktop/datafile'
     app.config.from_mapping(
         debug=True,
         SECRET_KEY='dev',
@@ -24,6 +26,23 @@ def create_app(test_config=None):
     except OSError:
         pass
 
+    # @app.route('/upload')
+    # def upload_file():
+    #     return render_template('upload.html')
+
+
+    # # @app.route('/create', methods=['GET', 'POST'])
+    # def uploader_file():
+    #     methods=['GET', 'POST']
+    #     if request.method == 'POST':
+    #         file = request.files['file']
+    #         file.save(os.path.join(app.config['UPLOAD_FOLDER'], file.filename))
+    #         # return render_template('blog/create.html')
+    #         return redirect(url_for('create'))
+    #         # return 'file uploaded successfully'
+
+
+
     # a simple page that says hello / test
     @app.route('/hello')
     def hello():
@@ -38,5 +57,6 @@ def create_app(test_config=None):
     from . import blog
     app.register_blueprint(blog.bp)
     app.add_url_rule('/', endpoint='index')
+
 
     return app
