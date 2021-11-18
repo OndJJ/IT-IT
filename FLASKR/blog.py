@@ -26,23 +26,13 @@ def index():
 @bp.route('/create', methods=('GET', 'POST'))
 @login_required
 def create():
-    path = 'FLASKR\templates\media'
-    # if request.method == 'POST':
-    #     file = request.files['file']
-    #     file.save(os.path.join(file.filename))
 
     if request.method == 'POST':
         title = request.form['title']
         body = request.form['body']
         file = request.files['file']
         filename = secure_filename(file.filename)
-        # os.makedirs(path)
-        # bp.config['UPLOAD_FOLDER'] = 'FLASKR\templates\media'
-        file.save(os.path.join(file.filename))
-        # file.save(os.path.join('FLASKR\templates\media', file.filename))
-        # file.save('C:\Users\ond\vs_space\flaskr\FLASKR\templates\blog'+secure_filename(f.filename))
-        # file.save('FLASKR\templates\media' + secure_filename(file.filename))
-        # 파일 업로드 처리
+        file.save(os.path.join('media', file.filename))
         error = None
 
         if not title:
