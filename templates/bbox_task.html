@@ -1,0 +1,204 @@
+<!-- 페이지 기본 설정-->
+
+{% extends "layout.html" %}
+{% block title %}BBox Task{% endblock %}
+{% block head %}
+
+<!--super == 부모 클래스로부터 상속받은 필드나 메소드를 자식 클래스에서 참조하는 데 사용하는 자바 참조 변수-->
+{{ super() }}
+
+<!--link == 외부 리소스 연결 요소 href == 연결할 리소스의 URL, 절대/상대 경로 URL 모두 가능-->
+<link rel="stylesheet" href="{{ url_for('static', filename='css/leaflet/leaflet.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/leaflet.draw/leaflet.draw.css') }}">
+
+<!-- style 속성(attribute) 이용 CSS 스타일을 HTML 요소에 설정 할 수 있음
+  leaflet-container, annotationAccordion 관련 설정-->
+<style>
+  .leaflet-container {
+    height: 600px;
+    width: 800px;
+  }
+
+  /* Holds the instances (with the delete buttons)*/
+  /* overflwo == 요소의 박스 내용이 더 길 때 어떻게 처리 할건지 선택하는 속성 */
+  #annotationAccordion {
+    overflow: auto;
+    height: 550px;
+  }
+</style>
+{% endblock %}
+
+<!-- No navbar for this task, waste of space... -->
+{% block navbar %}{% endblock %}
+
+<!-- modals 관련 설정 -->
+<!-- div : Division(분할, 나누기)태그 html에서 웹 페이지의 내용(텍스트, 이미지, 머리글 등)을 구분하는데 사용
+     class : '복수'의 요소에 스타일을 적용 
+     id : '유일'한 요소에 스타일을 적용 
+     tabindex : 키보드 접근성에 근접한 속성 
+                0 = 탭을 눌렀을 때 포커스가 가지 않는 엘리먼트에게 포커스를 줄 수 있다.
+         1 ~ 32768= 양수는 탭의 순서를 지정 해 줄 수 있음 -> 포커스 우선 순위 지정 가능(낮은 숫자 우선)
+               -1 = 탭을 눌렀을 때 포커스가 가는 엘리먼트에게 포커스를 잃게 할 수 있다.
+     role : 개별 tag에 역할 정의
+     aria-labelledby : 객체와 해당 레이블 간의 관계 설정, 해당 값은 레이블 지정에 필요한 특스트가 있는 요소를
+                       참조하는 하나 이상의 요소 ID여야 함, 공백으로 구분하여 여러 ID 요소를 나열 할 수 있음
+
+     aria-hidden :     스크린 리더와 같은 보조 기술을 사용하는 사용자를 대상으로 콘텐츠의 탐색을 제한,
+                       aria-hidden이 "true"로 설정되면, 스크린 리더로 해당 콘텐츠를 가상 커서로 탐색할 수 없다.
+-->
+{% block modals %}
+<div>
+  <!-- class 지정 modal, fade / id 지정 bboxTaskHelpModal 따로 관리 / 탭 기능 설정 / 역할 정의 /bboxTaskHelpModalLabel와 id 관계 설정 / 커서 제한 -->
+  <div class="modal fade" id="bboxTaskHelpModal" tabIndex="-1" role="dialog" aria-labelledby="bboxTaskHelpModalLabel"
+    aria-hidden="true">
+    <!-- class 지정 modal-dialog, 역할 : document -->
+    <div class="modal-dialog" role="document">
+      <!-- class 지정 modal-content-->
+      <div class="modal-content">
+        <!-- class 지정 "modal-header-->
+        <div class="modal-header">
+          <!--class 지정 modal-title / id bboxTaskHelpModalLabel{{인수}} 따로 관리 / task_instructions 해당 부분 찾아봐야함 -->
+          <h5 class="modal-title" id="bboxTaskHelpModalLabel">{{ task_instructions['title'] | safe }}</h5>
+
+          <!-- Close 버튼 생성-->
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <!-- span : inline 요소 텍스트 스타일 등 특정 부분에 스타일 지정할 때 사용 / 
+                 &XXXX : 마크업과 충돌을 막기 위해 사용하는 표기법 &times == 곱셈을 의미 -->
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+
+        <!--Class 지정 "modal-body"-->
+        <div class="modal-body">
+          <!-- p : 문단 생성
+               {{외부에 있는 프로퍼터 task_instructions 의 인자 ['description'] 불러오는 문법}} -->
+          <p>{{ task_instructions['description'] | safe }}</p>
+
+          <!-- span : inline 요소 텍스트 스타일 등 특정 부분에 스타일 지정할 때 사용 /
+               a  : 하이퍼링크를 걸어주는 태그 
+               href : 연결할 리소스의 URL, 절대/상대 경로 URL 모두 가능 이 경우 {{Mustache}}를  활용
+               target : 링크 여는 방법 설정/ _self: 현재 페이지 (기본값)
+                                            _blank: 새 탭
+                                            _parent: 부모 페이지로, iframe 등이 사용된 환경에서 사용
+                                            _top: 최상위 페이지로, iframe 등이 사용된 환경에서 사용
+                                            프레임이름: 직접 프레임이름을 명시해서 사용 -->
+          <span>Detailed instructions can be found <a href={{ task_instructions['instructions'] }}
+              target="_blank">here</a>.</span>
+        </div>
+
+        <!--Class 지정 "modal-footer"-->
+        <div class="modal-footer">
+
+          <!--Close 버튼 생성
+                data-dismiss="modal"를 통해 모달을 닫을수 있다.-->
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+<div>
+  <!-- 위 코드 반복 // Hot Keys 생성 -->
+  <!-- class를 통해 모달을 선언하고 투명에서 밝아지는 효과(fade)를 준다.  -->
+  <!-- class 지정 modal, fade / id 지정 bboxTaskHelpModal 따로 관리 / 탭 기능 설정 / 역할 정의 /bboxTaskHelpModalLabel와 id 관계 설정 / 커서 제한 -->
+  <div class="modal fade" id="bboxTaskHotKeysModal" tabIndex="-1" role="dialog"
+    aria-labelledby="bboxTaskHotKeysModalLabel" aria-hidden="true">
+    <!-- class 지정 modal-dialog, 역할 : document -->
+    <div class="modal-dialog" role="document">
+      <!-- class 지정 modal-content -->
+      <div class="modal-content">
+        <!-- class 지정 modal-header -->
+        <div class="modal-header">
+          <!-- class 지정 modal-title, id 지정/ title은 Hot Keys ! -->
+          <h5 class="modal-title" id="bboxTaskHotKeysModalLabel">Hot Keys</h5>
+          <!-- Close 버튼 생성 -->
+          <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <!-- span tag / &times; == x / button이기 때문에 &times;를 누르면 동작하게 만듬-->
+            <span aria-hidden="true">&times;</span>
+          </button>
+        </div>
+        <!-- class 지정 modal-body -->
+        <div class="modal-body">
+
+          <!-- <table> 태그는 HTML 문서에서 표를 만드는 태그
+            행과 열을 표현하기 위해 <tr>, <td>등의 태그와 함께 작성
+            <tr> 태그는 표의 행
+            <td> 태그는 표의 열을 나타내며, <tr> 태그 하위에 위치-->
+          <table class="table">
+            <thead>
+              <tr>
+                <th>Key</th>
+                <th>Action</th>
+              </tr>
+            </thead>
+
+            <!--<tbody> 태그는 HTML 테이블에서 내용 콘텐츠(body content)들을 하나의 그룹으로 묶을 때 사용
+                <tbody> 요소는 테이블의 각 영역(header, body, footer)을 명시하기 위해 <thead>, <tfoot> 요소와 함께 사용-->
+            <tbody>
+              <tr>
+                <td>ESC</td>
+                <td>Exit drawing mode.</td>
+              </tr>
+              <tr>
+                <td>D</td>
+                <td>New box, enter drawing mode.</td>
+              </tr>
+              <tr>
+                <td>H</td>
+                <td>Hide all boxes.</td>
+              </tr>
+              <tr>
+                <td>S</td>
+                <td>Show all boxes.</td>
+              </tr>
+              <tr>
+                <td>SPACE</td>
+                <td>Next image.</td>
+              </tr>
+              <tr>
+                <td>Left Arrow</td>
+                <td>Previous image.</td>
+              </tr>
+              <tr>
+                <td>Right Arrow</td>
+                <td>Next image.</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <!--Class 지정 "modal-footer"-->
+        <div class="modal-footer">
+          <!--Close 버튼 생성
+                data-dismiss="modal"를 통해 모달을 닫을수 있다.-->
+          <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+<!-- js call -->
+{% block scripts %}
+<!--super == 부모 클래스로부터 상속받은 필드나 메소드를 자식 클래스에서 참조하는 데 사용하는 자바 참조 변수-->
+{{ super() }}
+
+<!--<script>의  type 디폴트를 text/javascript 지정 / 하위 호환성을 위해 적어주는게 좋다.-->
+<script type="text/javascript">
+
+  /* taskId {{인수 불러오기}}지정 */
+  var taskId = {{ task_id| tojson }};
+  /* taskData {{인수 불러오기}}지정 */
+  var taskData = {{ task_data| tojson }};
+  /* categories {{인수 불러오기}}지정 */
+  var categories = {{ categories| tojson }};
+  /* mturk {{인수 불러오기}}지정 */
+  var mturk = {{ mturk| tojson }};
+  /* taskInstructions {{인수 불러오기}}지정 */
+  var taskInstructions = {{ task_instructions| tojson }};
+  document.V.bboxTask(taskId, taskData, categories, mturk, taskInstructions);
+
+</script>
+
+{% endblock %}

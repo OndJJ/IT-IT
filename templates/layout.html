@@ -1,0 +1,49 @@
+<!doctype html>
+
+<head>
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+  <link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap-4.0.0/bootstrap.min.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/app.css') }}">
+  <!-- 
+viewport메타태그 : 모바일웹이나 반응형웹에서 각각의 기기장치를 인식할 때 사용하는 중요한 태그입니다. 
+- width=device-width부분은 장치의 화면 너비를 따르도록 페이지 너비를 설정합니다 (장치에 따라 다름).
+- initial-scale=1.0부분은 브라우저에서 페이지를 처음로드 할 때 초기 확대 / 축소 수준을 설정합니다.
+
+rel : relation(링크 태그에 달리는 링크가 현재 페이지와 어떤 관계를 갖는지를 설명하는 attribute(속성)이다.)
+shortcut icon : 아래처럼 탭옆에 있는 이미지아이콘을 표현하기 위해 shortcut icon 이 사용된다.
+stylesheet : 스타일 시트(stylesheet)로 사용할 외부 리소스를 불러옴.
+-->
+
+  {% block head %}
+  <title>{% block title %}{% endblock %} - VAT</title>
+  {% endblock %}
+</head>
+
+<body>
+  {% block navbar %}
+  <nav class="navbar navbar-light bg-faded">
+    <!-- nav태그 : 네비게이션 바, 부트스트랩의 메뉴바(기본형) 
+       class 에는 아주큰화면, 큰화면, 중간화면 등등,, 클래스 중 하나 -->
+    <a class="navbar-brand" href="#">
+      <!-- a 태그 : anchor의 첫글자 '정박자', '닻' ,,,, 다른문서로 이동,또는 같은 문서내의 이동을 위해 사용한다. -->
+      <!-- navbar-brand : 링크 이동이 필요할때 사용하는 클래스 -->
+      <!-- href="#" : 클릭 이벤트 발생시 페이지 전환을 하지 않도록 하기 위해서 쓰인다. 클릭시 화면 최상단으로 이동 -->
+
+      Visipedia Annotation Toolkit
+    </a>
+  </nav>
+  {% endblock %}
+  <div class="container-fluid">
+    <!-- class 와 id의 차이: class는 여러번 선언(같은이름)하여 사용이 가능하다. -->
+    <div id="app">
+      <!-- edit_image.js에서 document.getElementById('app')로 app이라는 id를 찾는다.(id는 문서내에서 유일.) -->
+      {% block app %}{% endblock %}
+    </div>
+  </div>
+  {% block modals %}{% endblock %}
+  {% block scripts %}
+  <script type="text/javascript" src="{{ url_for('static', filename='app.bundle.js') }}"></script>
+  {% endblock %}
+
+</body>

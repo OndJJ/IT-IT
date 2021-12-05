@@ -1,0 +1,82 @@
+{% extends "layout.html" %}
+<!-- 템플릿 엔진에게 이 템플릿이 다른 템플릿을 확장extends 한다고 알려준다. 템플릿 시스템이 이 템플릿을 검증할 때, 가장 먼저 부모 템플릿을 찾는다. 그 확장 태그가 템플릿에서 가장 먼저 있어야 한다.
+부모 템플릿에 정의된 블럭의 내용을 보여주려면 {{ super() }}를 사용하면 된다.-->
+{% block title %}Edit Task{% endblock %}
+{% block head %}
+  {{ super() }}
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/leaflet/leaflet.css') }}">
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/leaflet.draw/leaflet.draw.css') }}">
+<!-- static 디렉터리의 'css/leaflet/leaflet.css'파일을 연결한다는 의미다. url_for 함수는 앞에서 배운 URL 추적 함수다. 앞에서는 url_for 함수가 URL을 찾아준다고 했지만 정적 파일의 URL도 찾아준다.  -->
+
+  <style>
+  .leaflet-container{
+      height: 600px;
+      width: 700px;
+  }
+  /* Holds the instances (with the delete buttons)  인스턴스를 보관합니다. 삭제변수 포함  */
+  #annotationAccordion{
+    overflow: auto;
+    height: 550px;
+  }
+  </style>
+{% endblock %}
+
+<!-- No navbar for this task, waste of space... -->
+{% block navbar %}{% endblock %}
+
+{% block modals %}
+<div>
+  <!-- data-backdrop="static" : 배경을 클릭해도 modal이 닫히지 않게 설정-->
+  <!-- tabIndex="-1" : -1 = 탭을 눌렀을 때 포커스가 가는 엘리먼트에게 포커스를 잃게 할 수 있다. -->
+  <!-- role="dialog" : 모달역할 명시-->
+  <!-- aria-labelledby="categorySelectionModalLabel" : 
+        임의의 고유 ID값을 부여해제목역할을 수행하는 요소와 연결-->
+  <!-- aria-hidden="true" : 스크린 리더로 해당 콘텐츠를 가상 커서로 탐색할 수 없다.-->
+  <div class="modal fade" id="categorySelectionModal" data-backdrop="static" tabIndex="-1" role="dialog" aria-labelledby="categorySelectionModalLabel" aria-hidden="true">
+  <!-- id > class > 태그순으로 적용된다. -->
+    <div class="modal-dialog" role="document">
+      <div id="categorySelectionModalContent" class="modal-content">
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+<script type="text/javascript">
+
+  var taskId = {{ task_id|tojson }};
+  var imageIds = {{ image_ids|tojson }};
+  var categories = {{ categories|tojson }};
+  document.V.editTask(taskId, imageIds, categories);
+
+</script>
+
+{% endblock %}
+
+tabindex 
+
+
+
+
+<!-- 
+  변수
+  {{ 변수 }} : 템플릿 엔진이 변수를 만나면, 평가하여 그 결과로 치환합니다.
+    점(.)은 변수의 속성에 접근할 때에 사용
+    예를들면, {{ section.title }}은 section 개체의 title 속성으로 치환
+
+  변수가 존재하지 않을 경우, 템플릿 시스템은 TEMPLATE_STRING_IF_INVALID 설정값을 삽입하는데, 그 기본값은 ''(공백 문자)입니다
+
+  필터
+  필터를 사용함으로써 변수의 표시에 변화를 줄 수 있습니다.
+  예를들면, {{ name|lower }}은 {{ name }} 변수에 lower 필터를 적용시켜서, 텍스트를 소문자로 변경시킨 결과를 표출한다. 파이프(|)를 사용하여 필터를 적용
+
+  필터는 “연쇄적으로” 사용하여, 필터의 결과가 그 다음 필터에 적용되도록 할 수 있습니다.
+  {{ text|escape|linebreaks }}는 텍스트 컨텐츠를 이스케이프한 다음, 행 바꿈을 <p> 태그로 바꾸기 위해 종종 사용되곤 합니다.
+
+  어떤 필터는 인자를 취합니다. 필터 인자는 {{bio|truncatewords:30 }}과 같이 사용합니다. 이것은 bio 변수의 처음 30 단어를 보여줍니다.
+  
+  필터 인자에 공백이 포함된 경우에는 반드시 따옴표로 둘러싸야 합니다. 예를 들어 목록을 쉼표와 공백으로 join하는 경우 {{ list|join:", " }}과 같이 사용합니다.
+
+ -->

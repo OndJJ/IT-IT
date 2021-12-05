@@ -1,0 +1,71 @@
+{% extends "layout.html" %}
+<!--레이아웃.html파일로부터 파생되었다.-->
+
+{% block title %}Edit Image{% endblock %}
+<!--edit image가 블럭의 타이틀-->
+
+{% block head %}
+<!--블럭머리, 그냥 블럭을 나눈 구문이라고 생각하면 됨.-->
+{{ super() }}
+<!--강조하겠다-->
+
+<link rel="stylesheet" href="{{ url_for('static', filename='css/leaflet/leaflet.css') }}">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/leaflet.draw/leaflet.draw.css') }}">
+<!--static 경로에 있는 filename이 'css/leaf~~~'인 파일을 사용-->
+
+<!--link
+  -템플릿에 링크하는 것처럼 url을 작성하는 것은 간단한 라우트 방법이지만,
+-동적 라우트를 위해 템플릿에서 URL을 구성하는 것은 더욱 복잡하기 때문.
+-플라스크는 url_for()헬퍼 함수를 제공하는데, 이 함수는 어플리케이션 URL맵에 저장된 정보를 통해 URL을 생성한다.
+-상대 URL은 어플리케이션의 다른 라우트를 연결하는 링크를 생성할 때 충분하다.
+-절대 URL은 단지 웹 브라우저 밖에서 사용하는 경우는 링크에서만 필요하다.
+-동적 url은 동적 파트를 키워드 인수로 URL_FOR()에 넘겨서 생성할 수 있다.-->
+<!--EX) URL_FOR('INDEX, PAGE=2')
+는 /?PAGE=2 를 리턴-->
+
+
+
+<style>
+  .leaflet-container {
+    height: 600px;
+    width: 600px;
+  }
+
+  #annotationAccordion {
+    overflow: auto;
+    height: 550px;
+  }
+
+  #categorySelectionModalCategoryList {
+    max-height: 550px;
+    overflow: auto;
+  }
+</style>
+{% endblock %}
+{% block modals %}
+<div>
+  <div class="modal fade" id="categorySelectionModal" data-backdrop="static" tabIndex="-1" role="dialog"
+    aria-labelledby="categorySelectionModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+      <div id="categorySelectionModalContent" class="modal-content">
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
+{% block scripts %}
+{{ super() }}
+<script type="text/javascript">
+
+  var editImageData = {
+    'image': JSON.parse({{ image| tojson | safe }}),
+  'annotations' : JSON.parse({{ annotations| tojson | safe }}),
+    'categories' : JSON.parse({{ categories| tojson | safe }})
+  };
+
+  document.V.editImage(editImageData);
+
+</script>
+
+
+{% endblock %}
